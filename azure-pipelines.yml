@@ -16,10 +16,12 @@ steps:
       echo displayin system information
       cat /etc/os-release
       echo -----------------------------===============
+      su -
+      apt-get install sudo -y
       find /usr/bin -name "sudo"
       echo find /usr/bin -name "sudo"
       export PATH=$PATH:/usr/bin/ 
-      sudo yum -y install java-1.8.0-openjdk-devel
+      yum -y install java-1.8.0-openjdk-devel
       echo ==========fin install java-================
       curl https://downloads.lightbend.com/scala/2.12.10/scala-2.12.10.rpm --output scala-2.12.10.rpm
       echo ==========fin download scala-2.12.10.rpm ==============
