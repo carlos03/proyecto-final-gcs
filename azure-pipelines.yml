@@ -12,7 +12,21 @@ pool:
 container: centos:7
 
 steps:
-- script: echo Compilar y correr las pruebas unitarias
+- script: |
+    yum -y install java-1.8.0-openjdk-devel
+    curl https://downloads.lightbend.com/scala/2.12.10/scala-2.12.10.rpm --output scala-2.12.10.rpm
+    yum -y install scala-2.12.10.rpm
+    curl https://bintray.com/sbt/rpm/rpm | tee /etc/yum.repos.d/bintray-sbt-rpm.repo
+    yum -y install sbt
+    yum install -y git
+    yum install -y which
+    yum install -y yum-utils
+    yum -y install rpm-build
+    git clone https://github.com/mundacho/proyecto-gcs.git
+    cd proyecto-gcs
+    sbt compile
+    sbt rpm:packageBin
+    echo Compilar y correr las pruebas unitarias
   displayName: 'Commit Check'
 
 - script: |
