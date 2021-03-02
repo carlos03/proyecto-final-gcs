@@ -15,32 +15,30 @@ steps:
   - script: |
       echo displayin system information
       cat /etc/os-release
-      echo -----------------------------===============
-      su -
-      apt-get install sudo -y
+      echo -----------------------------===============      
       find /usr/bin -name "sudo"
       echo find /usr/bin -name "sudo"
       export PATH=$PATH:/usr/bin/ 
-      yum -y install java-1.8.0-openjdk-devel
+      su -c yum -y install java-1.8.0-openjdk-devel
       echo ==========fin install java-================
       curl https://downloads.lightbend.com/scala/2.12.10/scala-2.12.10.rpm --output scala-2.12.10.rpm
       echo ==========fin download scala-2.12.10.rpm ==============
-      sudo yum -y install scala-2.12.10.rpm
+      su -c yum -y install scala-2.12.10.rpm
       echo ==========fin installa scala-2.12.10.rpm ==============
-      curl https://bintray.com/sbt/rpm/rpm | sudo tee /etc/yum.repos.d/bintray-sbt-rpm.repo
+      curl https://bintray.com/sbt/rpm/rpm | su -c  tee /etc/yum.repos.d/bintray-sbt-rpm.repo
       echo ========== fin add repo //bintray.com/sbt/rpm/rpm ==================
-      sudo yum -y install sbt
+      su -c  yum -y install sbt
       echo ========== fin install sbt ===================
-      sudo yum install -y which
+      su -c  yum install -y which
       echo ========== fin install which ===================
-      sudo yum install -y yum-utils
+      su -c  yum install -y yum-utils
       echo ========== fin install yum-utils ===================
-      sudo yum -y install rpm-build
+      su -c  yum -y install rpm-build
       echo ========== fin install rpm/build===================
       echo listar directorio actual
       ls -al
-      sudo sbt compile
-      sbt rpm:packageBin
+      su -c  sbt compile
+      su -c  sbt rpm:packageBin
       echo Compilar y correr las pruebas unitarias
     displayName: "Commit Check"
 
