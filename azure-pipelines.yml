@@ -4,7 +4,7 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+  - master
 
 pool:
   vmImage: ubuntu-latest
@@ -12,26 +12,33 @@ pool:
 container: centos:7
 
 steps:
-- script: |
-    echo displayin system information
-    cat /etc/os-release
-    echo -----------------------------===============
-    yum -y install java-1.8.0-openjdk-devel
-    curl https://downloads.lightbend.com/scala/2.12.10/scala-2.12.10.rpm --output scala-2.12.10.rpm
-    yum -y install scala-2.12.10.rpm
-    curl https://bintray.com/sbt/rpm/rpm | sudo tee /etc/yum.repos.d/bintray-sbt-rpm.repo
-    yum -y install sbt
-    yum install -y git
-    yum install -y which
-    yum install -y yum-utils
-    yum -y install rpm-build
-    echo listar directorio actual
-    ls -al
-    sbt compile
-    sbt rpm:packageBin
-    echo Compilar y correr las pruebas unitarias
-  displayName: 'Commit Check'
+  - script: |
+      echo displayin system information
+      cat /etc/os-release
+      echo -----------------------------===============
+      yum -y install java-1.8.0-openjdk-devel
+      echo ==========fin install java-================
+      curl https://downloads.lightbend.com/scala/2.12.10/scala-2.12.10.rpm --output scala-2.12.10.rpm
+      echo ==========fin download scala-2.12.10.rpm ==============
+      sudo yum -y install scala-2.12.10.rpm
+      echo ==========fin installa scala-2.12.10.rpm ==============
+      curl https://bintray.com/sbt/rpm/rpm | sudo tee /etc/yum.repos.d/bintray-sbt-rpm.repo
+      echo ========== fin add repo //bintray.com/sbt/rpm/rpm ==================
+      sudo yum -y install sbt
+      echo ========== fin install sbt ===================
+      sudo yum install -y which
+      echo ========== fin install which ===================
+      sudo yum install -y yum-utils
+      echo ========== fin install yum-utils ===================
+      sudo yum -y install rpm-build
+      echo ========== fin install rpm/build===================
+      echo listar directorio actual
+      ls -al
+      sudo sbt compile
+      sbt rpm:packageBin
+      echo Compilar y correr las pruebas unitarias
+    displayName: "Commit Check"
 
-- script: |
-    echo Correr las pruebas de integración
-  displayName: 'Integration Tests'
+  - script: |
+      echo Correr las pruebas de integración
+    displayName: "Integration Tests"
