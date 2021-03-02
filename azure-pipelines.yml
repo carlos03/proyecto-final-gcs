@@ -9,44 +9,33 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-strategy:
-  matrix:
-    jdk11_linux:
-      imageName: "ubuntu-latest"
-      jdk_version: "1.11"
-  maxParallel: 1
-
-container: centos:7
+## container: centos:7
 
 steps:
   - script: |
       echo displayin system information
       cat /etc/os-release
-      java --version
       echo -----------------------------===============      
-      find /usr/bin -name "sudo"
-      echo find /usr/bin -name "sudo"
-      export PATH=$PATH:/usr/bin/ 
-      su -c yum -y install java-1.8.0-openjdk-devel
+      sudo apt-get install openjdk-11-jdk
       echo ==========fin install java-================
       curl https://downloads.lightbend.com/scala/2.12.10/scala-2.12.10.rpm --output scala-2.12.10.rpm
       echo ==========fin download scala-2.12.10.rpm ==============
-      su -c yum -y install scala-2.12.10.rpm
+      sudo apt-get -y install scala-2.12.10.rpm
       echo ==========fin installa scala-2.12.10.rpm ==============
       curl https://bintray.com/sbt/rpm/rpm | su -c  tee /etc/yum.repos.d/bintray-sbt-rpm.repo
       echo ========== fin add repo //bintray.com/sbt/rpm/rpm ==================
-      su -c  yum -y install sbt
+      sudo apt-get -y install sbt
       echo ========== fin install sbt ===================
-      su -c  yum install -y which
+      sudo apt-get install -y which
       echo ========== fin install which ===================
-      su -c  yum install -y yum-utils
+      sudo apt-get install -y yum-utils
       echo ========== fin install yum-utils ===================
-      su -c  yum -y install rpm-build
+      sudo apt-get -y install rpm-build
       echo ========== fin install rpm/build===================
       echo listar directorio actual
       ls -al
-      su -c  sbt compile
-      su -c  sbt rpm:packageBin
+      sbt compile
+      sbt rpm:packageBin
       echo Compilar y correr las pruebas unitarias
     displayName: "Commit Check"
 
