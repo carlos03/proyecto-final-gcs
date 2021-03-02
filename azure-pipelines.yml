@@ -9,12 +9,20 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+strategy:
+  matrix:
+    jdk11_linux:
+      imageName: "ubuntu-latest"
+      jdk_version: "1.11"
+  maxParallel: 1
+
 container: centos:7
 
 steps:
   - script: |
       echo displayin system information
       cat /etc/os-release
+      java --version
       echo -----------------------------===============      
       find /usr/bin -name "sudo"
       echo find /usr/bin -name "sudo"
