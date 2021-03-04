@@ -80,7 +80,6 @@ steps:
         sudo systemctl start gcs-app
         sudo systemctl status gcs-app
       readyTimeout: "20000"
-
   # - task: CopyFilesOverSSH@0
   #   inputs:
   #     sshEndpoint: "webserver-01"
