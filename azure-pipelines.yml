@@ -56,7 +56,13 @@ steps:
       ls -al
       echo Compilar y correr las pruebas unitarias
     displayName: "Commit Check"
-
+  - task: CopyFilesOverSSH@0
+    inputs:
+      sshEndpoint: 'webserver-01'
+      sourceFolder: './'
+      contents: '/azure-pipelines.yml'
+      targetFolder: '/home/azureuser'
+      readyTimeout: '20000'
   - script: |
       echo Correr las pruebas de integración
     displayName: "Integration Tests"
