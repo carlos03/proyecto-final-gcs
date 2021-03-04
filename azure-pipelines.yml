@@ -20,7 +20,7 @@ steps:
       echo displayin system information
       cat /etc/os-release
       echo -----------------------------===============      
-      sudo apt-get install openjdk-11-jdk
+      sudo apt-get install java-1.8.0-openjdk-devel
       echo ==========fin install java-================
       curl https://downloads.lightbend.com/scala/2.12.10/scala-2.12.10.rpm --output scala-2.12.10.rpm
       echo ==========fin download scala-2.12.10.rpm ==============
