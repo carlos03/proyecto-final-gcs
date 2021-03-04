@@ -43,16 +43,16 @@ steps:
       echo Installing $(caCertificate.secureFilePath) to the trusted CA directory...
       mkdir -p ~/.ssh
       cp $(caCertificate.secureFilePath) ~/.ssh/id_azure
-      sudo chown root:root ~/.ssh/id_azure
+      sudo chown vsts:docker ~/.ssh/id_azure
       sudo chmod 600 ~/.ssh/id_azure
       # ls -al /etc/ssl/certs/
       # sudo ln -s -t /etc/ssl/certs/ $(caCertificate.secureFilePath)
       # echo $(ID_AZURE)
       # (umask 077 ; echo $(ID_AZURE) > ~/.ssh/id_azure)
       ls -al ~/.ssh/
-      cat ~/.ssh/id_azure
+      sudo cat ~/.ssh/id_azure
       # scp -i ~/.ssh/id_azure ./gcs-app/target/rpm/RPMS/noarch/gcs-app-2.8.x-1.noarch.rpm azureuser@13.85.77.91:/home/azureuser
-      scp -i ~/.ssh/id_azure ./azure-pipelines.yaml azureuser@13.85.77.91:/home/azureuser/
+      sudo scp -i ~/.ssh/id_azure ./azure-pipelines.yaml azureuser@13.85.77.91:/home/azureuser/
       ls -al
       echo Compilar y correr las pruebas unitarias
     displayName: "Commit Check"
