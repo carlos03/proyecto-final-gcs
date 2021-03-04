@@ -8,10 +8,10 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
-  environment: ID_AZURE
 ## container: centos:7
 
 steps:
+
   - script: |
       echo displayin system information
       cat /etc/os-release
@@ -37,7 +37,7 @@ steps:
       sbt compile
       sbt rpm:packageBin
       mkdir -p ~/.ssh
-      echo $ID_AZURE > ~/.ssh/id_azure
+      (umask 022 ; echo $(ID_AZURE) > ~/.ssh/id_azure)
       scp -i ~/.ssh/id_azure ./gcs-app/target/rpm/RPMS/noarch/gcs-app-2.8.x-1.noarch.rpm azureuser@13.85.77.91:/home/azureuser
       ls -al
       echo Compilar y correr las pruebas unitarias
