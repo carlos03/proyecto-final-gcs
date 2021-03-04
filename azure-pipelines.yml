@@ -67,7 +67,7 @@ steps:
     inputs:
       sshEndpoint: "webserver-01"
       runOptions: "commands"
-      inline: sudo systemctl stop gcs-app | sudo rpm -e gcs-app | sudo rm /usr/share/gcs-app/conf/application.conf | sudo rpm -i gcs-app-2.8.x-1.noarch.rpm | sudo chown -R gcs-app /usr/share/gcs-app/ | sudo chgrp -R gcs-app /usr/share/gcs-app/ | sudo systemctl start gcs-app
+      inline: sudo systemctl stop gcs-app | sudo rpm -e gcs-app | sudo rpm -i gcs-app-2.8.x-1.noarch.rpm | sudo chown -R gcs-app /usr/share/gcs-app/ | sudo chgrp -R gcs-app /usr/share/gcs-app/ | sudo systemctl start gcs-app
       readyTimeout: "20000"
   - script: |
       echo Correr las pruebas de integración
