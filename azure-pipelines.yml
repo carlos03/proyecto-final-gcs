@@ -19,26 +19,31 @@ steps:
   - script: |
       echo displayin system information
       cat /etc/os-release
-      echo -----------------------------===============      
-      sudo apt-get install openjdk-8-jdk
+      echo ==========INSTALANDO JAVA===========================================================================    
+      sudo apt-cache --names-only search 'openjdk-[0-9]*-(jre|jdk)' | sort -t '-' -k 2 -n
+      echo ====================================================================================================
+      sudo apt install openjdk-8-jdk
+      echo ====================================================================================================
+      sudo java -version
       echo ==========fin install java-================
-      curl https://downloads.lightbend.com/scala/2.12.10/scala-2.12.10.rpm --output scala-2.12.10.rpm
-      echo ==========fin download scala-2.12.10.rpm ==============
-      sudo apt-get -y install scala-2.12.10.rpm
-      echo ==========fin installa scala-2.12.10.rpm ==============
-      curl https://bintray.com/sbt/rpm/rpm | su -c  tee /etc/yum.repos.d/bintray-sbt-rpm.repo
-      echo ========== fin add repo //bintray.com/sbt/rpm/rpm ==================
-      sudo apt-get -y install sbt
-      echo ========== fin install sbt ===================
-      sudo apt-get install -y which
-      echo ========== fin install which ===================
-      sudo apt-get install -y yum-utils
-      echo ========== fin install yum-utils ===================
-      sudo apt-get -y install rpm-build
-      echo ========== fin install rpm/build===================
-      echo listar directorio actual
-      sbt compile
-      sbt rpm:packageBin
+      # curl https://downloads.lightbend.com/scala/2.12.10/scala-2.12.10.rpm --output scala-2.12.10.rpm
+      # echo ==========fin download scala-2.12.10.rpm ==============
+      # sudo apt-get -y install scala-2.12.10.rpm
+      # echo ==========fin installa scala-2.12.10.rpm ==============
+      # curl https://bintray.com/sbt/rpm/rpm | su -c  tee /etc/yum.repos.d/bintray-sbt-rpm.repo
+      # echo ========== fin add repo //bintray.com/sbt/rpm/rpm ====================================================================
+      # sudo apt-get -y install sbt
+      # echo ========== fin install sbt =========================================================================================
+      # sudo apt-get install -y which
+      # echo ========== fin install which =========================================================================================
+      # sudo apt-get install -y yum-utils
+      # echo ========== fin install yum-utils =========================================================================================
+      # sudo apt-get -y install rpm-build
+      # echo ========== fin install rpm/build===============================================================================
+      # echo listar directorio actual
+      # sbt compile
+      # sbt rpm:packageBin
+      echo ========== fin install rpm/build=========================================================================================
       ls -al
       # echo Installing $(caCertificate.secureFilePath) to the trusted CA directory...
       # mkdir -p ~/.ssh
@@ -57,52 +62,30 @@ steps:
       echo Compilar y correr las pruebas unitarias
     displayName: "Commit Check"
 
-  - task: CopyFilesOverSSH@0
-    inputs:
-      sshEndpoint: "webserver-01"
-      sourceFolder: "./gcs-app/target/rpm/RPMS/noarch/"
-      contents: "gcs-app-2.8.x-1.noarch.rpm"
-      targetFolder: "/home/azureuser"
-      readyTimeout: "20000"
-
-  - task: SSH@0
-    inputs:
-      sshEndpoint: "webserver-01"
-      runOptions: "commands"
-      commands: |
-        echo ================desintalando================
-        sudo systemctl stop gcs-app
-        sudo rpm -e gcs-app
-        echo ===============intalando============
-        sudo rpm -i gcs-app-2.8.x-1.noarch.rpm
-        sudo chown -R gcs-app /usr/share/gcs-app/
-        sudo chgrp -R gcs-app /usr/share/gcs-app/
-        sudo systemctl start gcs-app
-        sudo systemctl status gcs-app
-      readyTimeout: "20000"
   # - task: CopyFilesOverSSH@0
   #   inputs:
   #     sshEndpoint: "webserver-01"
-  #     sourceFolder: "./"
-  #     contents: "/azure-pipelines.yml"
+  #     sourceFolder: "./gcs-app/target/rpm/RPMS/noarch/"
+  #     contents: "gcs-app-2.8.x-1.noarch.rpm"
   #     targetFolder: "/home/azureuser"
   #     readyTimeout: "20000"
+
   # - task: SSH@0
   #   inputs:
   #     sshEndpoint: "webserver-01"
   #     runOptions: "commands"
   #     commands: |
+  #       echo ================desintalando================
   #       sudo systemctl stop gcs-app
-  #       stp=$!
-  #       wait $stp
   #       sudo rpm -e gcs-app
-  #       rmapp=$!
-  #       wait $rmapp
+  #       echo ===============intalando============
   #       sudo rpm -i gcs-app-2.8.x-1.noarch.rpm
   #       sudo chown -R gcs-app /usr/share/gcs-app/
   #       sudo chgrp -R gcs-app /usr/share/gcs-app/
-  #       sudo systemctl restart gcs-app
+  #       sudo systemctl start gcs-app
+  #       sudo systemctl status gcs-app
   #     readyTimeout: "20000"
+
   - script: |
       echo Correr las pruebas de integración
     displayName: "Integration Tests"
