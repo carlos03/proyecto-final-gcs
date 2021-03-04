@@ -17,68 +17,93 @@ steps:
     inputs:
       secureFile: "webserver-01_key.pem"
   - script: |
-      # echo displayin system information
-      # cat /etc/os-release
-      # echo -----------------------------===============      
-      # sudo apt-get install openjdk-11-jdk
-      # echo ==========fin install java-================
-      # curl https://downloads.lightbend.com/scala/2.12.10/scala-2.12.10.rpm --output scala-2.12.10.rpm
-      # echo ==========fin download scala-2.12.10.rpm ==============
-      # sudo apt-get -y install scala-2.12.10.rpm
-      # echo ==========fin installa scala-2.12.10.rpm ==============
-      # curl https://bintray.com/sbt/rpm/rpm | su -c  tee /etc/yum.repos.d/bintray-sbt-rpm.repo
-      # echo ========== fin add repo //bintray.com/sbt/rpm/rpm ==================
-      # sudo apt-get -y install sbt
-      # echo ========== fin install sbt ===================
-      # sudo apt-get install -y which
-      # echo ========== fin install which ===================
-      # sudo apt-get install -y yum-utils
-      # echo ========== fin install yum-utils ===================
-      # sudo apt-get -y install rpm-build
-      # echo ========== fin install rpm/build===================
-      # echo listar directorio actual
-      # ls -al
-      # sbt compile
-      # sbt rpm:packageBin
-      echo Installing $(caCertificate.secureFilePath) to the trusted CA directory...
-      mkdir -p ~/.ssh
-      cp $(caCertificate.secureFilePath) ~/.ssh/id_azure
-      sudo chown vsts:docker ~/.ssh/id_azure
-      sudo chmod 600 ~/.ssh/id_azure
-      # ls -al /etc/ssl/certs/
-      # sudo ln -s -t /etc/ssl/certs/ $(caCertificate.secureFilePath)
-      # echo $(ID_AZURE)
-      # (umask 077 ; echo $(ID_AZURE) > ~/.ssh/id_azure)
-      ls -al ~/.ssh/
-      sudo cat ~/.ssh/id_azure
-      # scp -i ~/.ssh/id_azure ./gcs-app/target/rpm/RPMS/noarch/gcs-app-2.8.x-1.noarch.rpm azureuser@13.85.77.91:/home/azureuser
-      sudo scp -i ~/.ssh/id_azure ./azure-pipelines.yaml azureuser@13.85.77.91:/home/azureuser/
+      echo displayin system information
+      cat /etc/os-release
+      echo -----------------------------===============      
+      sudo apt-get install openjdk-11-jdk
+      echo ==========fin install java-================
+      curl https://downloads.lightbend.com/scala/2.12.10/scala-2.12.10.rpm --output scala-2.12.10.rpm
+      echo ==========fin download scala-2.12.10.rpm ==============
+      sudo apt-get -y install scala-2.12.10.rpm
+      echo ==========fin installa scala-2.12.10.rpm ==============
+      curl https://bintray.com/sbt/rpm/rpm | su -c  tee /etc/yum.repos.d/bintray-sbt-rpm.repo
+      echo ========== fin add repo //bintray.com/sbt/rpm/rpm ==================
+      sudo apt-get -y install sbt
+      echo ========== fin install sbt ===================
+      sudo apt-get install -y which
+      echo ========== fin install which ===================
+      sudo apt-get install -y yum-utils
+      echo ========== fin install yum-utils ===================
+      sudo apt-get -y install rpm-build
+      echo ========== fin install rpm/build===================
+      echo listar directorio actual
+      sbt compile
+      sbt rpm:packageBin
       ls -al
+      # echo Installing $(caCertificate.secureFilePath) to the trusted CA directory...
+      # mkdir -p ~/.ssh
+      # cp $(caCertificate.secureFilePath) ~/.ssh/id_azure
+      # sudo chown vsts:docker ~/.ssh/id_azure
+      # sudo chmod 600 ~/.ssh/id_azure
+      # # ls -al /etc/ssl/certs/
+      # # sudo ln -s -t /etc/ssl/certs/ $(caCertificate.secureFilePath)
+      # # echo $(ID_AZURE)
+      # # (umask 077 ; echo $(ID_AZURE) > ~/.ssh/id_azure)
+      # ls -al ~/.ssh/
+      # sudo cat ~/.ssh/id_azure
+      # # scp -i ~/.ssh/id_azure ./gcs-app/target/rpm/RPMS/noarch/gcs-app-2.8.x-1.noarch.rpm azureuser@13.85.77.91:/home/azureuser
+      # sudo scp -i ~/.ssh/id_azure ./azure-pipelines.yaml azureuser@13.85.77.91:/home/azureuser/
+      # ls -al
       echo Compilar y correr las pruebas unitarias
     displayName: "Commit Check"
+
   - task: CopyFilesOverSSH@0
     inputs:
       sshEndpoint: "webserver-01"
-      sourceFolder: "./"
-      contents: "/azure-pipelines.yml"
+      sourceFolder: "./gcs-app/target/rpm/RPMS/noarch/"
+      contents: "gcs-app-2.8.x-1.noarch.rpm"
       targetFolder: "/home/azureuser"
       readyTimeout: "20000"
+
   - task: SSH@0
     inputs:
       sshEndpoint: "webserver-01"
       runOptions: "commands"
       commands: |
+        echo ================desintalando================
         sudo systemctl stop gcs-app
-        stp=$!
-        wait $stp
-        sudo rpm -e gcs-app 
-        rmapp=$!
-        wait $rmapp
-        sudo rpm -i gcs-app-2.8.x-1.noarch.rpm 
+        sudo rpm -e gcs-app
+        echo ===============intalando============
+        sudo rpm -i gcs-app-2.8.x-1.noarch.rpm
         sudo chown -R gcs-app /usr/share/gcs-app/
         sudo chgrp -R gcs-app /usr/share/gcs-app/
-        sudo systemctl restart gcs-app
+        sudo systemctl start gcs-app
+        sudo systemctl status gcs-app
       readyTimeout: "20000"
+
+  # - task: CopyFilesOverSSH@0
+  #   inputs:
+  #     sshEndpoint: "webserver-01"
+  #     sourceFolder: "./"
+  #     contents: "/azure-pipelines.yml"
+  #     targetFolder: "/home/azureuser"
+  #     readyTimeout: "20000"
+  # - task: SSH@0
+  #   inputs:
+  #     sshEndpoint: "webserver-01"
+  #     runOptions: "commands"
+  #     commands: |
+  #       sudo systemctl stop gcs-app
+  #       stp=$!
+  #       wait $stp
+  #       sudo rpm -e gcs-app
+  #       rmapp=$!
+  #       wait $rmapp
+  #       sudo rpm -i gcs-app-2.8.x-1.noarch.rpm
+  #       sudo chown -R gcs-app /usr/share/gcs-app/
+  #       sudo chgrp -R gcs-app /usr/share/gcs-app/
+  #       sudo systemctl restart gcs-app
+  #     readyTimeout: "20000"
   - script: |
       echo Correr las pruebas de integración
     displayName: "Integration Tests"
