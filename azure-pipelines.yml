@@ -11,6 +11,11 @@ pool:
 ## container: centos:7
 
 steps:
+  - task: JavaToolInstaller@0
+    inputs:
+      versionSpec: "8"
+      jdkArchitectureOption: "x64"
+      jdkSourceOption: "PreInstalled"
   - task: DownloadSecureFile@1
     name: caCertificate
     displayName: "Instalando llave privada webserver"
@@ -20,29 +25,30 @@ steps:
       echo displayin system information
       cat /etc/os-release
       echo ==========INSTALANDO JAVA===========================================================================    
-      sudo apt-cache --names-only search 'openjdk-[0-9]*-(jre|jdk)' | sort -t '-' -k 2 -n
-      echo ====================================================================================================
-      sudo apt install openjdk-8-jdk
-      echo ====================================================================================================
+      ls /usr/lib/jvm -al
+      # sudo apt-cache --names-only search 'openjdk-[0-9]*-(jre|jdk)' | sort -t '-' -k 2 -n
+      # echo ====================================================================================================
+      # sudo apt install openjdk-8-jdk
+      # echo ====================================================================================================
       sudo java -version
-      echo ==========fin install java-================
-      # curl https://downloads.lightbend.com/scala/2.12.10/scala-2.12.10.rpm --output scala-2.12.10.rpm
-      # echo ==========fin download scala-2.12.10.rpm ==============
-      # sudo apt-get -y install scala-2.12.10.rpm
-      # echo ==========fin installa scala-2.12.10.rpm ==============
-      # curl https://bintray.com/sbt/rpm/rpm | su -c  tee /etc/yum.repos.d/bintray-sbt-rpm.repo
-      # echo ========== fin add repo //bintray.com/sbt/rpm/rpm ====================================================================
-      # sudo apt-get -y install sbt
-      # echo ========== fin install sbt =========================================================================================
-      # sudo apt-get install -y which
-      # echo ========== fin install which =========================================================================================
-      # sudo apt-get install -y yum-utils
-      # echo ========== fin install yum-utils =========================================================================================
-      # sudo apt-get -y install rpm-build
-      # echo ========== fin install rpm/build===============================================================================
-      # echo listar directorio actual
-      # sbt compile
-      # sbt rpm:packageBin
+      # echo ==========fin install java-================
+      curl https://downloads.lightbend.com/scala/2.12.10/scala-2.12.10.rpm --output scala-2.12.10.rpm
+      echo ==========fin download scala-2.12.10.rpm ==============
+      sudo apt-get -y install scala-2.12.10.rpm
+      echo ==========fin installa scala-2.12.10.rpm ==============
+      curl https://bintray.com/sbt/rpm/rpm | su -c  tee /etc/yum.repos.d/bintray-sbt-rpm.repo
+      echo ========== fin add repo //bintray.com/sbt/rpm/rpm ====================================================================
+      sudo apt-get -y install sbt
+      echo ========== fin install sbt =========================================================================================
+      sudo apt-get install -y which
+      echo ========== fin install which =========================================================================================
+      sudo apt-get install -y yum-utils
+      echo ========== fin install yum-utils =========================================================================================
+      sudo apt-get -y install rpm-build
+      echo ========== fin install rpm/build===============================================================================
+      echo listar directorio actual
+      sbt compile
+      sbt rpm:packageBin
       echo ========== fin install rpm/build=========================================================================================
       ls -al
       # echo Installing $(caCertificate.secureFilePath) to the trusted CA directory...
