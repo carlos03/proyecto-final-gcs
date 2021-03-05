@@ -5,10 +5,25 @@
 
 trigger:
   - master
+resources:
+  containers:
+    - container: my_container
+      image: ubuntu-latest
+    - container: pg9
+      image: postgres:9
 
 pool:
   vmImage: ubuntu-latest
+
 ## container: centos:7
+
+strategy:
+  matrix:
+    postgres9:
+      postgresService: pg9
+
+services:
+  postgres: $[ variables['postgresService'] ]
 
 steps:
   - task: JavaToolInstaller@0
@@ -91,7 +106,15 @@ steps:
         sudo systemctl start gcs-app
         sudo systemctl status gcs-app
       readyTimeout: "20000"
+  - script: |
+      echo  ===============corriendo pruebas unitarias ==============
+      sbt tests
+    displayName: "Unit Test"
 
+  - script: |
+      apt install -y postgresql-client
+      psql --host=127.0.0.1 --username=gsc --password=gsc --database=gsc --command="SELECT 1;"
+      sbt "project gcsAppIT" test
   - script: |
       echo Correr las pruebas de integración
     displayName: "Integration Tests"
