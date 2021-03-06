@@ -93,7 +93,7 @@ steps:
       readyTimeout: "20000"
   - script: |
       echo  ===============corriendo pruebas unitarias ==============
-      sbt tests
+      sbt test
     displayName: "Unit Test"
 
   - script: |
